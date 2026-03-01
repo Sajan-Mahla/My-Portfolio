@@ -1,0 +1,447 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sajan Mahla — iOS Developer</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Mono:ital,wght@0,300;0,400;1,300&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --bg: #060810;
+    --bg2: #0a0c14;
+    --surface: #0f1120;
+    --border: rgba(255,255,255,0.06);
+    --accent: #4f7cff;
+    --accent2: #a78bfa;
+    --text: #e8eaf2;
+    --muted: #525870;
+    --tag-bg: rgba(79,124,255,0.08);
+  }
+  html { scroll-behavior: smooth; }
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'DM Mono', monospace;
+    font-size: 15px;
+    line-height: 1.7;
+    cursor: none;
+    overflow-x: hidden;
+  }
+
+  .cursor { position:fixed; width:10px; height:10px; background:var(--accent); border-radius:50%; pointer-events:none; z-index:9999; transform:translate(-50%,-50%); mix-blend-mode:screen; transition:width .2s,height .2s; }
+  .cursor-ring { position:fixed; width:32px; height:32px; border:1px solid rgba(79,124,255,.35); border-radius:50%; pointer-events:none; z-index:9998; transform:translate(-50%,-50%); transition:width .3s,height .3s; }
+
+  body::before { content:''; position:fixed; inset:0; background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.04'/%3E%3C/svg%3E"); pointer-events:none; z-index:100; opacity:.35; }
+
+  .orb { position:fixed; border-radius:50%; filter:blur(130px); pointer-events:none; z-index:0; }
+  .orb1 { width:700px; height:700px; top:-250px; right:-150px; background:radial-gradient(circle,rgba(79,124,255,.1) 0%,transparent 70%); animation:d1 20s ease-in-out infinite alternate; }
+  .orb2 { width:500px; height:500px; bottom:5%; left:-150px; background:radial-gradient(circle,rgba(167,139,250,.08) 0%,transparent 70%); animation:d2 25s ease-in-out infinite alternate; }
+  @keyframes d1 { from{transform:translate(0,0)} to{transform:translate(-80px,100px)} }
+  @keyframes d2 { from{transform:translate(0,0)} to{transform:translate(100px,-80px)} }
+
+  nav { position:fixed; top:0; left:0; right:0; z-index:50; display:flex; justify-content:space-between; align-items:center; padding:22px 52px; backdrop-filter:blur(24px); background:rgba(6,8,16,.75); border-bottom:1px solid var(--border); }
+  .nav-logo { font-family:'Syne',sans-serif; font-weight:800; font-size:17px; letter-spacing:-.5px; color:var(--text); text-decoration:none; }
+  .nav-logo span { color:var(--accent); }
+  .nav-links { display:flex; gap:32px; list-style:none; }
+  .nav-links a { color:var(--muted); text-decoration:none; font-size:12px; letter-spacing:.06em; transition:color .2s; }
+  .nav-links a:hover { color:var(--text); }
+  .nav-status { display:flex; align-items:center; gap:8px; font-size:11px; color:var(--muted); }
+  .status-dot { width:6px; height:6px; background:#34d399; border-radius:50%; animation:blink 2s ease-in-out infinite; }
+  @keyframes blink { 0%,100%{opacity:1} 50%{opacity:.3} }
+
+  section { position:relative; z-index:1; }
+
+  #hero { min-height:100vh; display:flex; align-items:center; padding:130px 52px 80px; max-width:1200px; margin:0 auto; }
+  .hero-inner { max-width:800px; }
+  .hero-tag { display:inline-flex; align-items:center; gap:10px; font-size:11px; letter-spacing:.18em; text-transform:uppercase; color:var(--accent); margin-bottom:28px; opacity:0; animation:fadeUp .7s ease .1s forwards; }
+  .hero-tag::before { content:''; display:block; width:28px; height:1px; background:var(--accent); }
+  h1 { font-family:'Syne',sans-serif; font-size:clamp(48px,8vw,100px); font-weight:800; line-height:.95; letter-spacing:-4px; color:var(--text); margin-bottom:12px; opacity:0; animation:fadeUp .7s ease .25s forwards; }
+  .h1-sub { font-family:'Syne',sans-serif; font-size:clamp(48px,8vw,100px); font-weight:800; line-height:.95; letter-spacing:-4px; color:transparent; -webkit-text-stroke:1px rgba(79,124,255,.4); opacity:0; animation:fadeUp .7s ease .35s forwards; margin-bottom:36px; }
+  .hero-meta { display:flex; align-items:center; gap:16px; flex-wrap:wrap; margin-bottom:28px; opacity:0; animation:fadeUp .7s ease .45s forwards; }
+  .meta-pill { display:inline-flex; align-items:center; gap:6px; padding:5px 12px; border:1px solid var(--border); border-radius:20px; font-size:11px; color:var(--muted); }
+  .hero-desc { font-size:15px; color:var(--muted); max-width:560px; margin-bottom:44px; line-height:1.9; opacity:0; animation:fadeUp .7s ease .55s forwards; }
+  .hero-desc strong { color:var(--text); font-weight:400; }
+  .hero-cta { display:flex; gap:14px; flex-wrap:wrap; opacity:0; animation:fadeUp .7s ease .65s forwards; }
+  .btn { display:inline-flex; align-items:center; gap:8px; padding:13px 26px; border-radius:3px; font-family:'DM Mono',monospace; font-size:12px; letter-spacing:.06em; text-decoration:none; transition:all .2s; cursor:none; }
+  .btn-primary { background:var(--accent); color:#060810; font-weight:500; }
+  .btn-primary:hover { background:#6b93ff; transform:translateY(-2px); box-shadow:0 8px 28px rgba(79,124,255,.35); }
+  .btn-ghost { border:1px solid var(--border); color:var(--muted); }
+  .btn-ghost:hover { border-color:rgba(255,255,255,.18); color:var(--text); transform:translateY(-2px); }
+
+  .goal-banner { position:relative; z-index:1; margin:0 52px; border:1px solid rgba(79,124,255,.2); background:linear-gradient(90deg,rgba(79,124,255,.06),rgba(167,139,250,.04)); padding:22px 32px; display:flex; align-items:center; gap:20px; }
+  .goal-icon { font-size:28px; flex-shrink:0; }
+  .goal-text { font-size:13px; color:var(--muted); }
+  .goal-text strong { font-family:'Syne',sans-serif; font-size:16px; font-weight:700; color:var(--text); display:block; letter-spacing:-.3px; margin-bottom:2px; }
+  .goal-progress { margin-left:auto; text-align:right; flex-shrink:0; }
+  .goal-label { font-size:11px; color:var(--muted); margin-bottom:6px; }
+  .progress-bar { width:160px; height:4px; background:var(--border); border-radius:2px; overflow:hidden; }
+  .progress-fill { height:100%; background:linear-gradient(90deg,var(--accent),var(--accent2)); border-radius:2px; width:0; animation:fillBar 1.5s ease 1s forwards; }
+  @keyframes fillBar { to { width:17%; } }
+
+  .skills-strip { border-top:1px solid var(--border); border-bottom:1px solid var(--border); padding:16px 0; overflow:hidden; position:relative; z-index:1; margin-top:60px; }
+  .skills-track { display:flex; gap:44px; animation:marquee 22s linear infinite; white-space:nowrap; }
+  .skill-item { display:flex; align-items:center; gap:9px; color:var(--muted); font-size:11px; letter-spacing:.13em; text-transform:uppercase; flex-shrink:0; }
+  .skill-dot { width:3px; height:3px; background:var(--accent); border-radius:50%; }
+  @keyframes marquee { from{transform:translateX(0)} to{transform:translateX(-50%)} }
+
+  #stats { padding:80px 52px; max-width:1200px; margin:0 auto; }
+  .stats-row { display:grid; grid-template-columns:repeat(4,1fr); gap:2px; }
+  .stat-card { background:var(--surface); border:1px solid var(--border); padding:36px 28px; transition:border-color .3s,background .3s; }
+  .stat-card:hover { border-color:rgba(79,124,255,.3); background:rgba(79,124,255,.03); }
+  .stat-num { font-family:'Syne',sans-serif; font-size:52px; font-weight:800; letter-spacing:-2px; color:var(--accent); line-height:1; margin-bottom:8px; }
+  .stat-unit { font-size:24px; }
+  .stat-label { font-size:12px; color:var(--muted); }
+
+  #about { padding:80px 52px; max-width:1200px; margin:0 auto; display:grid; grid-template-columns:1fr 1fr; gap:80px; align-items:start; }
+  .section-label { font-size:11px; letter-spacing:.2em; text-transform:uppercase; color:var(--accent); margin-bottom:18px; display:flex; align-items:center; gap:10px; }
+  .section-label::after { content:''; flex:1; height:1px; background:var(--border); max-width:50px; }
+  h2 { font-family:'Syne',sans-serif; font-size:clamp(28px,3.5vw,44px); font-weight:800; letter-spacing:-1.5px; line-height:1.1; margin-bottom:22px; }
+  .about-text { color:var(--muted); line-height:1.9; font-size:14px; }
+  .about-text p+p { margin-top:14px; }
+  .about-text strong { color:var(--text); font-weight:400; }
+  .stack-grid { display:flex; flex-wrap:wrap; gap:8px; margin-top:28px; }
+  .stack-pill { padding:6px 14px; border:1px solid var(--border); border-radius:2px; font-size:11px; color:var(--muted); transition:all .2s; }
+  .stack-pill:hover { border-color:rgba(79,124,255,.4); color:var(--accent); }
+  .card-dark { background:var(--surface); border:1px solid var(--border); padding:28px; margin-bottom:2px; }
+  .card-dark-title { font-family:'Syne',sans-serif; font-size:14px; font-weight:700; color:var(--text); margin-bottom:12px; display:flex; align-items:center; gap:10px; flex-wrap:wrap; }
+  .card-dark-title .badge { font-family:'DM Mono',monospace; font-size:10px; font-weight:400; color:var(--accent); background:var(--tag-bg); padding:2px 8px; border-radius:2px; }
+  .card-dark-body { font-size:12px; color:var(--muted); line-height:1.8; }
+
+  #apps { padding:80px 52px; max-width:1200px; margin:0 auto; }
+  .apps-header { display:flex; justify-content:space-between; align-items:flex-end; margin-bottom:48px; }
+  .apps-grid { display:grid; grid-template-columns:repeat(4,1fr); gap:2px; }
+  .app-chip { background:var(--surface); border:1px solid var(--border); padding:18px 20px; display:flex; align-items:flex-start; gap:12px; transition:border-color .25s,background .25s; }
+  .app-chip:hover { border-color:rgba(79,124,255,.3); background:rgba(79,124,255,.04); }
+  .app-num { font-size:10px; color:var(--muted); margin-top:2px; flex-shrink:0; width:18px; }
+  .app-name { font-size:13px; color:var(--text); line-height:1.3; }
+
+  #work { padding:80px 52px; max-width:1200px; margin:0 auto; }
+  .project-featured { background:var(--surface); border:1px solid var(--border); padding:52px; display:grid; grid-template-columns:1fr 1fr; gap:60px; align-items:center; margin-bottom:2px; position:relative; overflow:hidden; }
+  .project-featured::before { content:''; position:absolute; inset:0; background:linear-gradient(135deg,rgba(79,124,255,.05) 0%,transparent 50%); }
+  .project-kicker { font-size:11px; letter-spacing:.15em; text-transform:uppercase; color:var(--accent); margin-bottom:20px; }
+  .project-title { font-family:'Syne',sans-serif; font-size:32px; font-weight:800; letter-spacing:-1px; margin-bottom:16px; }
+  .project-desc { font-size:13px; color:var(--muted); line-height:1.85; margin-bottom:24px; }
+  .project-tags { display:flex; flex-wrap:wrap; gap:8px; margin-bottom:28px; }
+  .tag { padding:4px 10px; background:var(--tag-bg); border:1px solid rgba(79,124,255,.2); border-radius:2px; font-size:11px; color:var(--accent); }
+  .project-link { font-size:12px; color:var(--muted); text-decoration:none; display:inline-flex; align-items:center; gap:6px; transition:color .2s,gap .2s; }
+  .project-link:hover { color:var(--accent); gap:10px; }
+  .project-visual { background:linear-gradient(135deg,rgba(79,124,255,.08),rgba(167,139,250,.04)); border:1px solid rgba(79,124,255,.12); border-radius:6px; min-height:220px; display:flex; align-items:center; justify-content:center; padding:24px; }
+  .arch-diagram { display:flex; flex-direction:column; gap:10px; width:100%; }
+  .arch-row { display:flex; gap:8px; }
+  .arch-box { flex:1; border:1px solid rgba(79,124,255,.25); border-radius:4px; padding:10px 12px; font-size:10px; color:rgba(79,124,255,.7); text-align:center; background:rgba(79,124,255,.05); }
+  .arch-box.hl { border-color:rgba(79,124,255,.6); color:var(--accent); background:rgba(79,124,255,.12); animation:glowBox 2.5s ease-in-out infinite alternate; }
+  @keyframes glowBox { from{box-shadow:none} to{box-shadow:0 0 16px rgba(79,124,255,.2)} }
+  .arch-arrow { text-align:center; color:var(--muted); font-size:13px; padding:4px 0; }
+  .projects-mini { display:grid; grid-template-columns:repeat(3,1fr); gap:2px; }
+  .project-mini { background:var(--surface); border:1px solid var(--border); padding:28px 24px; transition:border-color .25s; }
+  .project-mini:hover { border-color:rgba(79,124,255,.3); }
+  .mini-icon { font-size:24px; margin-bottom:16px; }
+  .mini-title { font-family:'Syne',sans-serif; font-size:17px; font-weight:700; letter-spacing:-.3px; margin-bottom:10px; }
+  .mini-desc { font-size:12px; color:var(--muted); line-height:1.75; margin-bottom:18px; }
+
+  #contact { padding:100px 52px; max-width:1200px; margin:0 auto; }
+  .contact-grid { display:flex; flex-direction:column; max-width:600px; }
+  .contact-big { font-family:'Syne',sans-serif; font-size:clamp(32px,5vw,60px); font-weight:800; letter-spacing:-2px; line-height:1.05; margin-bottom:24px; }
+  .contact-sub { color:var(--muted); font-size:14px; line-height:1.8; margin-bottom:36px; }
+  .socials { display:flex; gap:10px; flex-wrap:wrap; }
+  .social-btn { display:inline-flex; align-items:center; gap:8px; padding:11px 18px; border:1px solid var(--border); border-radius:3px; font-size:12px; color:var(--muted); text-decoration:none; transition:all .2s; }
+  .social-btn:hover { border-color:rgba(79,124,255,.4); color:var(--accent); background:rgba(79,124,255,.04); }
+  .contact-right { background:var(--surface); border:1px solid var(--border); padding:40px; }
+  .form-row { margin-bottom:20px; }
+  .form-label { font-size:11px; letter-spacing:.1em; text-transform:uppercase; color:var(--muted); margin-bottom:8px; display:block; }
+  .form-input { width:100%; background:var(--bg2); border:1px solid var(--border); padding:12px 16px; color:var(--text); font-family:'DM Mono',monospace; font-size:13px; border-radius:2px; outline:none; transition:border-color .2s; }
+  .form-input:focus { border-color:rgba(79,124,255,.4); }
+  textarea.form-input { resize:vertical; min-height:100px; }
+
+  footer { border-top:1px solid var(--border); padding:22px 52px; display:flex; justify-content:space-between; align-items:center; color:var(--muted); font-size:11px; position:relative; z-index:1; }
+
+  @keyframes fadeUp { from{opacity:0;transform:translateY(18px)} to{opacity:1;transform:translateY(0)} }
+  .fade-in { opacity:0; transform:translateY(24px); transition:opacity .7s ease,transform .7s ease; }
+  .fade-in.visible { opacity:1; transform:none; }
+  .delay-1 { transition-delay:.1s; }
+  .delay-2 { transition-delay:.2s; }
+
+  @media(max-width:900px){
+    nav{padding:18px 24px;} .nav-links,.nav-status{display:none;}
+    #hero{padding:110px 24px 60px;}
+    .goal-banner{margin:0 24px;flex-wrap:wrap;} .goal-progress{margin-left:0;}
+    #stats{padding:60px 24px;} .stats-row{grid-template-columns:repeat(2,1fr);}
+    #about{grid-template-columns:1fr;gap:40px;padding:60px 24px;}
+    #apps{padding:60px 24px;} .apps-grid{grid-template-columns:repeat(2,1fr);}
+    #work{padding:60px 24px;} .project-featured{grid-template-columns:1fr;} .project-visual{display:none;} .projects-mini{grid-template-columns:1fr;}
+    #contact{padding:60px 24px;} .contact-grid{grid-template-columns:1fr;}
+    footer{padding:20px 24px;flex-direction:column;gap:8px;text-align:center;}
+  }
+</style>
+</head>
+<body>
+
+<div class="cursor" id="cursor"></div>
+<div class="cursor-ring" id="cursorRing"></div>
+<div class="orb orb1"></div>
+<div class="orb orb2"></div>
+
+<nav>
+  <a class="nav-logo" href="#">Sajan<span>.</span></a>
+  <ul class="nav-links">
+    <li><a href="#about">about</a></li>
+    <li><a href="#apps">apps</a></li>
+    <li><a href="#work">work</a></li>
+    <li><a href="#contact">contact</a></li>
+  </ul>
+  <div class="nav-status"><span class="status-dot"></span> Open to opportunities</div>
+</nav>
+
+<section id="hero">
+  <div class="hero-inner">
+    <div class="hero-tag">iOS Developer · Punjab, India</div>
+    <h1>Sajan Mahla</h1>
+    <div class="h1-sub">builds for iOS.</div>
+    <div class="hero-meta">
+      <span class="meta-pill">🎂 19 y/o</span>
+      <span class="meta-pill">📱 31 apps shipped</span>
+      <span class="meta-pill">⚡ 8 months deep</span>
+      <span class="meta-pill">🍎 Apple — 2026</span>
+    </div>
+    <p class="hero-desc">Self-taught iOS developer who went from zero to <strong>31 apps in 8 months</strong>. I build native Swift apps and full-stack systems with TypeScript & MongoDB. My goal: <strong>work at Apple by end of 2026.</strong></p>
+    <div class="hero-cta">
+      <a href="#work" class="btn btn-primary">See My Work ↓</a>
+      <a href="https://github.com/Sajan-Mahla" target="_blank" class="btn btn-ghost">GitHub →</a>
+    </div>
+  </div>
+</section>
+
+<div class="goal-banner fade-in">
+  <div class="goal-icon">🍎</div>
+  <div class="goal-text">
+    <strong>Mission: Join Apple by December 2026</strong>
+    Building every single day. 31 apps down. The dream is in sight.
+  </div>
+  <div class="goal-progress">
+    <div class="goal-label">2026 progress</div>
+    <div class="progress-bar"><div class="progress-fill"></div></div>
+  </div>
+</div>
+
+<div class="skills-strip">
+  <div class="skills-track">
+    <span class="skill-item"><span class="skill-dot"></span>Swift</span>
+    <span class="skill-item"><span class="skill-dot"></span>SwiftUI</span>
+    <span class="skill-item"><span class="skill-dot"></span>UIKit</span>
+    <span class="skill-item"><span class="skill-dot"></span>CoreData</span>
+    <span class="skill-item"><span class="skill-dot"></span>SwiftData</span>
+    <span class="skill-item"><span class="skill-dot"></span>Combine</span>
+    <span class="skill-item"><span class="skill-dot"></span>TypeScript</span>
+    <span class="skill-item"><span class="skill-dot"></span>MongoDB</span>
+    <span class="skill-item"><span class="skill-dot"></span>REST APIs</span>
+    <span class="skill-item"><span class="skill-dot"></span>Postman</span>
+    <span class="skill-item"><span class="skill-dot"></span>Xcode</span>
+    <span class="skill-item"><span class="skill-dot"></span>MVVM</span>
+    <span class="skill-item"><span class="skill-dot"></span>Swift</span>
+    <span class="skill-item"><span class="skill-dot"></span>SwiftUI</span>
+    <span class="skill-item"><span class="skill-dot"></span>UIKit</span>
+    <span class="skill-item"><span class="skill-dot"></span>CoreData</span>
+    <span class="skill-item"><span class="skill-dot"></span>SwiftData</span>
+    <span class="skill-item"><span class="skill-dot"></span>Combine</span>
+    <span class="skill-item"><span class="skill-dot"></span>TypeScript</span>
+    <span class="skill-item"><span class="skill-dot"></span>MongoDB</span>
+    <span class="skill-item"><span class="skill-dot"></span>REST APIs</span>
+    <span class="skill-item"><span class="skill-dot"></span>Postman</span>
+    <span class="skill-item"><span class="skill-dot"></span>Xcode</span>
+    <span class="skill-item"><span class="skill-dot"></span>MVVM</span>
+  </div>
+</div>
+
+<section id="stats">
+  <div class="stats-row fade-in">
+    <div class="stat-card">
+      <div class="stat-num">31</div>
+      <div class="stat-label">iOS Apps Built</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-num">8<span class="stat-unit">mo</span></div>
+      <div class="stat-label">Of Experience</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-num">1</div>
+      <div class="stat-label">Full-Stack App (own backend)</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-num">19</div>
+      <div class="stat-label">Years Old · Punjab, IN</div>
+    </div>
+  </div>
+</section>
+
+<section id="about">
+  <div class="fade-in">
+    <div class="section-label">About</div>
+    <h2>Self-taught. Obsessed. Building.</h2>
+    <div class="about-text">
+      <p>I picked up Swift and haven't put it down. In 8 months I went from hello world to <strong>31 shipped apps</strong> — weather trackers, crypto dashboards, mind maps, accessibility tools, and more.</p>
+      <p>I don't just do iOS. I built a <strong>full-stack app from scratch</strong> — my own MongoDB database, TypeScript backend, REST API, tested end-to-end in Postman. I like understanding the whole system.</p>
+      <p>My goal is simple: <strong>Apple by end of 2026.</strong> Every commit gets me closer.</p>
+    </div>
+    <div class="stack-grid">
+      <span class="stack-pill">Swift</span>
+      <span class="stack-pill">SwiftUI</span>
+      <span class="stack-pill">UIKit</span>
+      <span class="stack-pill">CoreData</span>
+      <span class="stack-pill">SwiftData</span>
+      <span class="stack-pill">Combine</span>
+      <span class="stack-pill">TypeScript</span>
+      <span class="stack-pill">MongoDB</span>
+      <span class="stack-pill">Postman</span>
+      <span class="stack-pill">MVVM</span>
+    </div>
+  </div>
+  <div class="fade-in delay-1">
+    <div class="card-dark">
+      <div class="card-dark-title">Full-Stack App <span class="badge">Own Backend</span></div>
+      <div class="card-dark-body">Built the entire stack solo — MongoDB for data, TypeScript backend with custom REST endpoints, tested every route in Postman. No tutorials. Just figuring it out.</div>
+    </div>
+    <div class="card-dark">
+      <div class="card-dark-title">Currently Levelling Up <span class="badge">2026 Prep</span></div>
+      <div class="card-dark-body">Going deeper on Swift concurrency (async/await, actors), CoreML, and system design. Studying Apple's frameworks obsessively to be ready when the time comes.</div>
+    </div>
+    <div class="card-dark">
+      <div class="card-dark-title">Based in Punjab <span class="badge">India 🇮🇳</span></div>
+      <div class="card-dark-body">19 years old, self-taught, building from a small city with a big goal. The distance from Cupertino is just a number.</div>
+    </div>
+  </div>
+</section>
+
+<section id="apps">
+  <div class="apps-header fade-in">
+    <div>
+      <div class="section-label">All apps</div>
+      <h2>31 apps. 8 months. Zero excuses.</h2>
+    </div>
+  </div>
+  <div class="apps-grid fade-in">
+    <div class="app-chip"><span class="app-num">01</span><span class="app-name">Quote App</span></div>
+    <div class="app-chip"><span class="app-num">02</span><span class="app-name">CalcMate</span></div>
+    <div class="app-chip"><span class="app-num">03</span><span class="app-name">WeSplit</span></div>
+    <div class="app-chip"><span class="app-num">04</span><span class="app-name">TempSm</span></div>
+    <div class="app-chip"><span class="app-num">05</span><span class="app-name">GTF</span></div>
+    <div class="app-chip"><span class="app-num">06</span><span class="app-name">WeatherApp</span></div>
+    <div class="app-chip"><span class="app-num">07</span><span class="app-name">BetterRest</span></div>
+    <div class="app-chip"><span class="app-num">08</span><span class="app-name">WordScramble</span></div>
+    <div class="app-chip"><span class="app-num">09</span><span class="app-name">DictFict</span></div>
+    <div class="app-chip"><span class="app-num">10</span><span class="app-name">EduTainment</span></div>
+    <div class="app-chip"><span class="app-num">11</span><span class="app-name">iExpense</span></div>
+    <div class="app-chip"><span class="app-num">12</span><span class="app-name">ToDo</span></div>
+    <div class="app-chip"><span class="app-num">13</span><span class="app-name">Moonshot</span></div>
+    <div class="app-chip"><span class="app-num">14</span><span class="app-name">BookWorm</span></div>
+    <div class="app-chip"><span class="app-num">15</span><span class="app-name">Weather 2.0</span></div>
+    <div class="app-chip"><span class="app-num">16</span><span class="app-name">SwiftData Demo</span></div>
+    <div class="app-chip"><span class="app-num">17</span><span class="app-name">FocusTime</span></div>
+    <div class="app-chip"><span class="app-num">18</span><span class="app-name">InstaFilter</span></div>
+    <div class="app-chip"><span class="app-num">19</span><span class="app-name">DiceRoller</span></div>
+    <div class="app-chip"><span class="app-num">20</span><span class="app-name">BucketList</span></div>
+    <div class="app-chip"><span class="app-num">21</span><span class="app-name">MagicPress</span></div>
+    <div class="app-chip"><span class="app-num">22</span><span class="app-name">Accessibility</span></div>
+    <div class="app-chip"><span class="app-num">23</span><span class="app-name">Hot Prospects</span></div>
+    <div class="app-chip"><span class="app-num">24</span><span class="app-name">MindMapr</span></div>
+    <div class="app-chip"><span class="app-num">25</span><span class="app-name">Colorify</span></div>
+    <div class="app-chip"><span class="app-num">26</span><span class="app-name">CryptoView</span></div>
+    <div class="app-chip"><span class="app-num">27</span><span class="app-name">Weather Combine</span></div>
+    <div class="app-chip"><span class="app-num">28</span><span class="app-name">GithubUser</span></div>
+    <div class="app-chip" style="border-color:rgba(79,124,255,.3);background:rgba(79,124,255,.05)"><span class="app-num" style="color:var(--accent)">★</span><span class="app-name" style="color:var(--accent)">Full-Stack App</span></div>
+    <div class="app-chip" style="opacity:.5"><span class="app-num">30</span><span class="app-name" style="color:var(--muted)">Coming soon…</span></div>
+    <div class="app-chip" style="opacity:.5"><span class="app-num">31</span><span class="app-name" style="color:var(--muted)">Coming soon…</span></div>
+    <div class="app-chip" style="border-color:rgba(79,124,255,.2)"><span class="app-num" style="color:var(--accent)">++</span><span class="app-name" style="color:var(--muted);font-size:11px">More shipping in 2026</span></div>
+  </div>
+</section>
+
+<section id="work">
+  <div class="section-label fade-in">Highlighted work</div>
+  <h2 class="fade-in" style="margin-bottom:40px">Projects worth a closer look.</h2>
+
+  <div class="project-featured fade-in">
+    <div>
+      <div class="project-kicker">Full-Stack · Flagship Project</div>
+      <div class="project-title">Own Backend App</div>
+      <div class="project-desc">Built the entire stack from scratch — MongoDB database, TypeScript REST API, and a native SwiftUI frontend. Every endpoint designed, coded, and tested in Postman myself. This one proves I understand the whole system, not just the screen.</div>
+      <div class="project-tags">
+        <span class="tag">SwiftUI</span>
+        <span class="tag">TypeScript</span>
+        <span class="tag">MongoDB</span>
+        <span class="tag">REST API</span>
+        <span class="tag">Postman</span>
+        <span class="tag">Node.js</span>
+      </div>
+      <a href="https://github.com/Sajan-Mahla" class="project-link" target="_blank">View on GitHub →</a>
+    </div>
+    <div class="project-visual">
+      <div class="arch-diagram">
+        <div class="arch-row"><div class="arch-box hl">iOS App (SwiftUI)</div></div>
+        <div class="arch-arrow">↕ REST API calls</div>
+        <div class="arch-row"><div class="arch-box hl">TypeScript Backend</div></div>
+        <div class="arch-arrow">↕ Mongoose ODM</div>
+        <div class="arch-row"><div class="arch-box hl">MongoDB Database</div></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="projects-mini" style="margin-top:2px">
+    <div class="project-mini fade-in">
+      <div class="mini-icon">🌤️</div>
+      <div class="mini-title">WeatherApp + Weather 2.0</div>
+      <div class="mini-desc">Built the same problem twice — first with URLSession, then rebuilt with Combine. Two iterations, better architecture, sharper instincts.</div>
+      <div class="project-tags"><span class="tag">SwiftUI</span><span class="tag">Combine</span><span class="tag">REST API</span></div>
+    </div>
+    <div class="project-mini fade-in delay-1">
+      <div class="mini-icon">📈</div>
+      <div class="mini-title">CryptoView</div>
+      <div class="mini-desc">Live crypto price tracker with portfolio sim. MVVM architecture, async networking, SwiftUI charts, and clean reactive data flow.</div>
+      <div class="project-tags"><span class="tag">SwiftUI</span><span class="tag">MVVM</span><span class="tag">Combine</span></div>
+    </div>
+    <div class="project-mini fade-in delay-2">
+      <div class="mini-icon">🗺️</div>
+      <div class="mini-title">MindMapr</div>
+      <div class="mini-desc">Visual mind-mapping with custom canvas nodes using SwiftUI's Canvas API. Drag & drop, persistent CoreData storage, all native.</div>
+      <div class="project-tags"><span class="tag">SwiftUI</span><span class="tag">CoreData</span><span class="tag">Canvas API</span></div>
+    </div>
+  </div>
+</section>
+
+<section id="contact">
+  <div class="contact-grid">
+    <div class="fade-in">
+      <div class="section-label">Contact</div>
+      <div class="contact-big">Let's connect.</div>
+      <p class="contact-sub">Recruiter at Apple? Fellow dev? Someone who loves iOS? My DMs are open. Always down to talk Swift, architecture, or the grind.</p>
+      <div class="socials">
+        <a href="https://github.com/Sajan-Mahla" target="_blank" class="social-btn">⌥ GitHub</a>
+        <a href="https://www.linkedin.com/in/sajan-mahla/" target="_blank" class="social-btn">in LinkedIn</a>
+        <a href="https://x.com/MahlaSajan58352" target="_blank" class="social-btn">𝕏 Twitter</a>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<footer>
+  <span>© 2026 Sajan Mahla · Punjab, India</span>
+  <span>Future Apple Engineer 🍎</span>
+</footer>
+
+<script>
+  const cursor = document.getElementById('cursor');
+  const ring = document.getElementById('cursorRing');
+  let mx=0,my=0,rx=0,ry=0;
+  document.addEventListener('mousemove',e=>{mx=e.clientX;my=e.clientY;cursor.style.left=mx+'px';cursor.style.top=my+'px';});
+  (function loop(){rx+=(mx-rx)*.12;ry+=(my-ry)*.12;ring.style.left=rx+'px';ring.style.top=ry+'px';requestAnimationFrame(loop);})();
+  document.querySelectorAll('a,button').forEach(el=>{
+    el.addEventListener('mouseenter',()=>{cursor.style.width='18px';cursor.style.height='18px';ring.style.width='50px';ring.style.height='50px';});
+    el.addEventListener('mouseleave',()=>{cursor.style.width='10px';cursor.style.height='10px';ring.style.width='32px';ring.style.height='32px';});
+  });
+  const obs=new IntersectionObserver(entries=>{
+    entries.forEach(e=>{if(e.isIntersecting){e.target.classList.add('visible');obs.unobserve(e.target);}});
+  },{threshold:0.08});
+  document.querySelectorAll('.fade-in').forEach(el=>obs.observe(el));
+</script>
+</body>
+</html>
